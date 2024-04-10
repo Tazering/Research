@@ -1,9 +1,9 @@
 from PyPDF2 import PdfReader
 
+number = 16
+reader = PdfReader("C:/Users/tyler/dev/Research/fox_multimessenger-astronomy/" + str(number) + ".pdf")
 
-reader = PdfReader("C:/Users/tyler/dev/Research/fox_multimessenger-astronomy/45.pdf")
-
-keywords = ["learning", "neural", "machine", "multi", "deep", "convolutional", "rnn", "recurrent", "lstm", "language", "perceptron", "MLP", "messenger", "message", "em", "electromagnetic", "waves", "cosmic", "gravitational", "rays", "neutrinos", "wavelength", "photons", "Supernova", "supernova", "curve", "quasar"]
+keywords = ["learning", "neural", "machine", "multi", "deep", "convolutional", "rnn", "recurrent", "lstm", "language", "perceptron", "MLP", "messenger", "message", "em", "electromagnetic", "waves", "cosmic", "gravitational", "rays", "neutrinos", "wavelength", "photons", "Supernova", "supernova", "curve", "quasar", "git", "redshift", "pulsar", "radio"]
 keywords_dict = {}
 
 for key in keywords:
