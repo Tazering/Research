@@ -14,6 +14,8 @@ from sklearn.model_selection import train_test_split
 import shap
 import lime.lime_tabular
 
+
+# read in the data
 Data = pd.read_csv('C:/Users/ASUS/Documents/Windsor_XAI/breast-cancer.csv')
 features_name = Data.columns[2:]
 X = Data[features_name].to_numpy()
@@ -30,6 +32,7 @@ for i in range(len(Y)):
     else:
         Y[i] = 0
 
+# split the training set
 x_train, x_test, y_train, y_test = train_test_split(X,Y)
 
 # model = RandomForestClassifier(n_estimators=10, random_state=0).fit(x_train, y_train)
@@ -37,6 +40,7 @@ model = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), ran
 # model = xgboost.XGBClassifier().fit(x_train, y_train)
 # model = KNeighborsClassifier(n_neighbors=5).fit(x_train, y_train)
 
+# predict the model to get a model to predict
 y_pred_train = model.predict(x_train)
 y_pred_train = [round(value) for value in y_pred_train]
 print('train accuracy: ', accuracy_score(y_train,y_pred_train))
