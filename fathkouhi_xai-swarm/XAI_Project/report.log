@@ -39,3 +39,22 @@
 2024-08-02 21:43:11,041 - openml.datasets.dataset - INFO - pickle write iris
 2024-08-02 21:43:11,052 - root - INFO - Starting [get] request for the URL https://www.openml.org/api/v1/xml/data/list/limit/10000/offset/0
 2024-08-02 21:43:12,950 - root - INFO - 1.8967655s taken for [get] request for the URL https://www.openml.org/api/v1/xml/data/list/limit/10000/offset/0
+2024-08-02 22:27:29,998 - openml.config - INFO - Error opening file C:\Users\tyler\.openml\config: not readable
+2024-08-02 22:27:30,450 - openml.datasets.dataset - INFO - pickle write iris
+2024-08-02 22:27:30,490 - root - INFO - Starting [get] request for the URL https://www.openml.org/api/v1/xml/data/list/limit/10000/offset/0
+2024-08-02 22:27:32,278 - root - INFO - 1.7877672s taken for [get] request for the URL https://www.openml.org/api/v1/xml/data/list/limit/10000/offset/0
+2024-08-03 19:20:41,396 - openml.config - INFO - Error opening file C:\Users\tyler\.openml\config: not readable
+2024-08-03 19:20:41,762 - openml.datasets.dataset - INFO - pickle write iris
+2024-08-03 19:20:41,788 - root - INFO - Starting [get] request for the URL https://www.openml.org/api/v1/xml/data/list/limit/10000/offset/0
+2024-08-03 19:20:43,574 - root - INFO - 1.7863891s taken for [get] request for the URL https://www.openml.org/api/v1/xml/data/list/limit/10000/offset/0
+2024-08-03 19:21:05,091 - openml.config - INFO - Error opening file C:\Users\tyler\.openml\config: not readable
+2024-08-03 19:21:05,277 - openml.datasets.dataset - INFO - pickle write iris
+2024-08-03 19:21:05,288 - root - INFO - Starting [get] request for the URL https://www.openml.org/api/v1/xml/data/list/limit/10000/offset/0
+2024-08-03 19:21:07,064 - root - INFO - 1.7766712s taken for [get] request for the URL https://www.openml.org/api/v1/xml/data/list/limit/10000/offset/0
+2024-08-03 19:26:27,842 - openml.config - INFO - Error opening file C:\Users\tyler\.openml\config: not readable
+2024-08-03 19:26:44,398 - openml.config - INFO - Error opening file C:\Users\tyler\.openml\config: not readable
+2024-08-03 19:27:34,433 - openml.config - INFO - Error opening file C:\Users\tyler\.openml\config: not readable
+2024-08-03 19:29:23,057 - openml.config - INFO - Error opening file C:\Users\tyler\.openml\config: not readable
+2024-08-03 19:29:55,479 - openml.config - INFO - Error opening file C:\Users\tyler\.openml\config: not readable
+2024-08-03 19:30:11,386 - openml.config - INFO - Error opening file C:\Users\tyler\.openml\config: not readable
+2024-08-03 19:30:11,566 - openml.datasets.dataset - INFO - pickle write iris
