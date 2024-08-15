@@ -21,6 +21,8 @@ import data_preprocessing as dp
 
 import coalitional_methods as coal
 
+import XAI_Swarm_Opt
+
 # iris
 def test_iris():
     # grab data and split it
@@ -43,9 +45,29 @@ def test_iris():
     # data_tools.print_generic("SVM Score", svm_model.score(X_test, y_test))
     # data_tools.print_generic("RF Score", rf_model.score(X_test, y_test))
     # data_tools.print_generic("GB Score", gb_model.score(X_test, y_test))
-
+    
 
     # run swarm explanations
+    # grab a sample 
+    sample_number = 5
+
+    # data_tools.print_variable("x_val", x_val)
+
+    # details of a single datapoint
+    sample = X_test.iloc[sample_number]
+    sample_y = y_test.iloc[sample_number]
+    sample_y = 1 if sample_y == True else 0
+    sample = sample.values.reshape(1, -1)
+
+    # converts sample to a single list
+    sample_size = np.size(sample[0])
+
+    sample_list = sample[0]
+    temp_categorical = {"Begin_Categorical": 3, "Categorical_Index": [1, 2]}
+
+    data_tools.print_generic("svm_model output", svm_model.predict(sample))
+
+    XAI_Swarm_Opt.XAI(svm_model.predict(sample)[0], sample_list, np.size(sample_list), 50, 20,30, -1, 1, X_preprocessed, temp_categorical, False).XAI_swarm_Invoke()
 
     # get metrics
 
