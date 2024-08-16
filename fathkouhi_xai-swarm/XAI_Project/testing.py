@@ -27,11 +27,8 @@ import XAI_Swarm_Opt
 def test_iris():
     # grab data and split it
     X_preprocessed, y_preprocessed = dp.process_openml_dataset(61, "class")
+
     X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_preprocessed, y_preprocessed, test_size = .2)
-
-    # print(X_preprocessed.shape)
-
-    # data_tools.print_variable("X_preprocessed", X_preprocessed)
 
     # run all models: logistic regression, support vector machines, random forests, and gradient boosted machines
     lr_model = constants.models["logistic_regression"].fit(X_train, y_train)
@@ -39,13 +36,14 @@ def test_iris():
     rf_model = constants.models["random_forests"].fit(X_train, y_train)
     gb_model = constants.models["gradient_boosted_machine"].fit(X_train, y_train)
 
-
     # print the scores for testing purposes
     # data_tools.print_generic("Logistic Regression Score", lr_model.score(X_test, y_test))
     # data_tools.print_generic("SVM Score", svm_model.score(X_test, y_test))
     # data_tools.print_generic("RF Score", rf_model.score(X_test, y_test))
     # data_tools.print_generic("GB Score", gb_model.score(X_test, y_test))
     
+    # get list of feature names
+    features_names = X_train.columns
 
     # run swarm explanations
     # grab a sample 
@@ -67,7 +65,18 @@ def test_iris():
 
     data_tools.print_generic("svm_model output", svm_model.predict(sample))
 
-    XAI_Swarm_Opt.XAI(svm_model.predict(sample)[0], sample_list, np.size(sample_list), 50, 20,30, -1, 1, X_preprocessed, temp_categorical, False).XAI_swarm_Invoke()
+    results = XAI_Swarm_Opt.XAI(svm_model.predict(sample)[0], sample_list, np.size(sample_list), 50, 20,30, -1, 1, X_preprocessed, temp_categorical, False).XAI_swarm_Invoke()
+
+    contribute_dict = {}
+    contributes = results["contribute"]
+
+    for i in range(len(contributes)):
+        contribute_dict[features_names[i]] = contributes[i]
+    
+
+    results["contribute"] = contribute_dict
+
+    data_tools.print_generic("results", results)
 
     # get metrics
 
