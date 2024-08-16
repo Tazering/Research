@@ -34,9 +34,9 @@ from sklearn.preprocessing import StandardScaler
 
 import utils.data_tools as data_tools
 
-from coalitional_utils import train_models, explain_groups_w_retrain, influence_calcul
-from coalitional_utils import check_all_attributs_groups, compute_subgroups_correlation
-from coalitional_utils import remove_inclusions, generate_subgroups_group, coal_penalisation
+from dependencies.coalitional_utils import train_models, explain_groups_w_retrain, influence_calcul
+from dependencies.coalitional_utils import check_all_attributs_groups, compute_subgroups_correlation
+from dependencies.coalitional_utils import remove_inclusions, generate_subgroups_group, coal_penalisation
 
 def compute_vifs(datas):
     """
