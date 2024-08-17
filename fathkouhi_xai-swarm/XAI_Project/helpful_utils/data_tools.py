@@ -28,3 +28,12 @@ def print_dataset_sample(dataset_name, sample, sample_y, model):
     print(Style.BRIGHT + Fore.CYAN + 'X: ', Style.BRIGHT + Fore.LIGHTRED_EX + str(sample))
     print(Style.BRIGHT + Fore.CYAN + 'y: ', Style.BRIGHT + Fore.LIGHTRED_EX + str(sample_y),'\n')
     print(Style.BRIGHT + Fore.CYAN + 'Blackbox model prediction: ', Style.BRIGHT + Fore.YELLOW + str(model.predict_proba(sample)),'\n')
+
+# marker for location in code
+def print_marker():
+    print("\n\n Made it Here \n\n")
+
+# print variable and ends programs for ease of visibility
+def print_and_end(variable):
+    print(variable)
+    exit(0)

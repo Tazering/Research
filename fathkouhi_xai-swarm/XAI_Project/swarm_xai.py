@@ -4,7 +4,7 @@ import numpy as np
 from colorama import Fore, Style
 import SwarmPackagePy
 import matplotlib.pyplot as plt
-import utils.data_tools as data_tools
+import helpful_utils.data_tools as data_tools
 
 """
 size: (int) 
@@ -54,11 +54,9 @@ class XAI:
 
         # print the optimizer choice
         print('Select an Optimizer: ')
-        print('1- Firefly Algorithm')
+        print('1- PSO Algorithm')
         print('2- Bat Algorithm')
         print('3- Artificial Bee Algorithm')
-        print('4- Cat Algorithm')
-        print('5- Chicken Swarm Optimization')
         choice = input()
 
         # variables to store the message prompts
@@ -72,10 +70,6 @@ class XAI:
             return 2, int(input(num_iterations_msg)), int(input(num_trials_msg))
         elif choice == '3':
             return 3, int(input(num_iterations_msg)), int(input(num_trials_msg))
-        elif choice == '4':
-            return 4, int(input(num_iterations_msg)), int(input(num_trials_msg))
-        elif choice == '5':
-            return 5, int(input(num_iterations_msg)), int(input(num_trials_msg))
         else:
             exit()
 
@@ -86,8 +80,6 @@ class XAI:
     f = sample.T <dot> solution
     """
     def explainer_func(self, solutions):
-        # data_tools.print_variable("solutions", solutions)
-        # data_tools.print_variable("sample", self.sample)
         return self.sample.T.dot(solutions)
 
     """
@@ -122,7 +114,7 @@ class XAI:
             t1 = t2 = 0
 
             # the different optimizer algorithms
-            if self.optimizer_type == 1: # firefly
+            if self.optimizer_type == 1: # PSO
                 t1 = time.time_ns()
                 optimizer = SwarmPackagePy.pso(self.optimizer_param['num_pso'], self.cost_eval, x_min, x_max, self.size,
                                                self.optimizer_param['num_iteration'])
@@ -136,16 +128,6 @@ class XAI:
                 t1 = time.time_ns()
                 # print(self.sample)
                 optimizer = SwarmPackagePy.aba(self.optimizer_param['num_pso'], self.cost_eval, x_min, x_max, self.size,
-                                               self.optimizer_param['num_iteration'])
-                t2 = time.time_ns()
-            elif self.optimizer_type == 4: # cat
-                t1 = time.time_ns()
-                optimizer = SwarmPackagePy.ca(self.optimizer_param['num_pso'], self.cost_eval, x_min, x_max, self.size,
-                                               self.optimizer_param['num_iteration'])
-                t2 = time.time_ns()
-            elif self.optimizer_type == 5: # chicken swarm
-                t1 = time.time_ns()
-                optimizer = SwarmPackagePy.chso(self.optimizer_param['num_pso'], self.cost_eval, x_min, x_max, self.size,
                                                self.optimizer_param['num_iteration'])
                 t2 = time.time_ns()
             
@@ -173,15 +155,6 @@ class XAI:
         print(Style.BRIGHT + Fore.CYAN + 'Average Cost value: ', Style.BRIGHT + Fore.YELLOW + str(np.mean(Avg_cost)))
         print(Style.BRIGHT + Fore.CYAN + 'Explainer model prediction: ', Style.BRIGHT + Fore.YELLOW + str(np.array(best_pos).dot(np.array(self.sample).T)),'\n')
         print(Style.BRIGHT + Fore.CYAN + 'Local fidelity measure: ', Style.BRIGHT + Fore.YELLOW + str(np.abs(self.model_predict - np.array(best_pos).dot(np.array(self.sample).T))),'\n')
-        #
-        # print(Style.BRIGHT + Fore.RED + 'Feature contribution of best solution: ')
-        #
-        # print(Style.BRIGHT + Fore.BLUE + 'Beta0', ' : ', Style.BRIGHT + Fore.GREEN + str(best_pos[-1]))
-        #
-        # for i in range(len(self.features_list)):
-        #     print(Style.BRIGHT + Fore.BLUE + self.features_list[i],' : ', Style.BRIGHT + Fore.GREEN + str(best_pos[i] * self.sample[i]))
-
-        # create a dictionary that maps contribution to feature
 
         output_dict = {
             "average_time_value": np.mean(time_consumption) * 10**-9,
@@ -216,28 +189,9 @@ class XAI:
         else:
             Contribute = list(best_pos[0:-1]) # just gets everything
         self.Beta = best_pos[-1]
-        # self.features_list.append('Beta 0')
 
         # does the negative/positive distinguisher
         Negative, Positive = self.Neg_Positive_Distinguisher(Contribute)
-
-        # print contributions
-        data_tools.print_generic("numerical_features", self.numerical_features)
-        data_tools.print_generic("Contribute", Contribute)
-
-        # plots into a donut graph
-        # fig, axes = plt.subplots(2)
-        # self.Donut([float(abs(Contribute[i])) for i in Positive],[self.numerical_features[i] + ': ' + str(abs(Contribute[i])) for i in Positive],'Positive', axes[0])
-        # self.Donut([float(abs(Contribute[i])) for i in Negative],[self.numerical_features[i] + ': -' + str(abs(Contribute[i])) for i in Negative],'Negative', axes[1])
-
-        # plt.text(x = 2.2,y = 3.4,s='Actual prediction: ' + str(self.model_predict) + '\n' + 'approximate prediction: ' +
-        #            str(np.array(best_pos).dot(np.array(self.sample).T)) + '\n' + 'local fidelity: ' +
-        #            str(np.abs(self.model_predict - np.array(best_pos).dot(np.array(self.sample).T))),size=12,
-        #             bbox=dict(boxstyle="round",
-        #                ec=(1., 0.5, 0.5),
-        #                fc=(1., 0.8, 0.8),
-        #                ))
-        # plt.show()
 
         return Contribute
 
@@ -258,39 +212,3 @@ class XAI:
                 Positive.append(temp_index)
             temp_index += 1
         return Negative, Positive
-
-    # I think this creates a donut plot
-    def Donut(self,Contribute, Labels, Effect_Type, plt):
-        # data = Contribute
-        # recipe = Labels
-        x = Labels
-        y = np.array(Contribute)
-
-        patches, texts = plt.pie(y, startangle=90, radius=1.2)
-        labels = x
-        print(labels)
-        plt.legend(patches, labels, loc='best', bbox_to_anchor=(-0.1, 1.),
-                   fontsize=8)
-        plt.set_title(Effect_Type + ' effect on prediction')
-        # plt.show()
-
-
-        # fig, ax = plt.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
-        # wedges, texts = ax.pie(data, wedgeprops=dict(width=0.5), startangle=-40)
-        #
-        # bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
-        # kw = dict(arrowprops=dict(arrowstyle="-"),
-        #           bbox=bbox_props, zorder=0, va="center")
-        #
-        # for i, p in enumerate(wedges):
-        #     ang = (p.theta2 - p.theta1) / 2. + p.theta1
-        #     y = np.sin(np.deg2rad(ang))
-        #     x = np.cos(np.deg2rad(ang))
-        #     horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
-        #     connectionstyle = "angle,angleA=0,angleB={}".format(ang)
-        #     kw["arrowprops"].update({"connectionstyle": connectionstyle})
-        #     ax.annotate(recipe[i], xy=(x, y), xytext=(1.35 * np.sign(x), 1.4 * y),
-        #                 horizontalalignment=horizontalalignment, **kw)
-        #
-        # ax.set_title('Features which has ' + Effect_Type + ' effects on prediction')
-        # plt.show()
