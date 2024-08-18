@@ -34,7 +34,7 @@ class XAI:
     Categorical: categorical features
     Categorical_Status: boolean for whether to use categorical features or not
     """
-    def __init__(self, model_predict, sample, size, num_pso, num_iteration, num_trials, lower_bound, upper_bound, numerical_features, Categorical, Categorical_Status):
+    def __init__(self, model_predict, sample, size, num_pso, num_iteration, num_trials, lower_bound, upper_bound, numerical_features, Categorical, Categorical_Status, optimizer_type):
         self.size = size + 1 
         self.model_predict = model_predict
         self.loss = 0
@@ -43,7 +43,7 @@ class XAI:
         self.numerical_features = numerical_features
         self.Categorical = Categorical
         self.Categorical_Status = Categorical_Status
-        self.optimizer_type, self.optimizer_param['num_iteration'], self.optimizer_param['num_trials'] = self.Select_Optimizer()
+        self.optimizer_type = optimizer_type
         self.Beta = 0
 
     """
@@ -149,13 +149,6 @@ class XAI:
         else:
             contribute = self.Interpret(best_pos, False)
         
-        # prints the resulting values
-        print(Style.BRIGHT + Fore.CYAN + 'Average time value: ', Style.BRIGHT + Fore.YELLOW + str(np.mean(time_consumption) * 10**-9))
-        print(Style.BRIGHT + Fore.CYAN + 'minimum Cost value: ', Style.BRIGHT + Fore.YELLOW + str(min_cost))
-        print(Style.BRIGHT + Fore.CYAN + 'Average Cost value: ', Style.BRIGHT + Fore.YELLOW + str(np.mean(Avg_cost)))
-        print(Style.BRIGHT + Fore.CYAN + 'Explainer model prediction: ', Style.BRIGHT + Fore.YELLOW + str(np.array(best_pos).dot(np.array(self.sample).T)),'\n')
-        print(Style.BRIGHT + Fore.CYAN + 'Local fidelity measure: ', Style.BRIGHT + Fore.YELLOW + str(np.abs(self.model_predict - np.array(best_pos).dot(np.array(self.sample).T))),'\n')
-
         output_dict = {
             "average_time_value": np.mean(time_consumption) * 10**-9,
             "minimum_cost_value": min_cost,

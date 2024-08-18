@@ -141,13 +141,13 @@ def swarm_xai_study(X_preprocessed, X_test, y_test, model, sample_number = 17, c
 
     # dictionaries that list outputs of swarm approach
     if predict_prob:
-        output_dict["pso"] = swarm_xai.XAI(max(model.predict_proba(sample)[0]), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False).XAI_swarm_Invoke()
-        output_dict["bat"] = swarm_xai.XAI(max(model.predict_proba(sample)[0]), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False).XAI_swarm_Invoke()
-        output_dict["abc"] = swarm_xai.XAI(max(model.predict_proba(sample)[0]), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False).XAI_swarm_Invoke()
+        output_dict["pso"] = swarm_xai.XAI(max(model.predict_proba(sample)[0]), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 1).XAI_swarm_Invoke()
+        output_dict["bat"] = swarm_xai.XAI(max(model.predict_proba(sample)[0]), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 2).XAI_swarm_Invoke()
+        output_dict["abc"] = swarm_xai.XAI(max(model.predict_proba(sample)[0]), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 3).XAI_swarm_Invoke()
     else:
-        output_dict["pso"] = swarm_xai.XAI(model.predict(sample), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False).XAI_swarm_Invoke()
-        output_dict["bat"] = swarm_xai.XAI(model.predict(sample), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False).XAI_swarm_Invoke()
-        output_dict["abc"] = swarm_xai.XAI(model.predict(sample), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False).XAI_swarm_Invoke()
+        output_dict["pso"] = swarm_xai.XAI(model.predict(sample), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 1).XAI_swarm_Invoke()
+        output_dict["bat"] = swarm_xai.XAI(model.predict(sample), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 2).XAI_swarm_Invoke()
+        output_dict["abc"] = swarm_xai.XAI(model.predict(sample), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 3).XAI_swarm_Invoke()
 
     
     return output_dict
