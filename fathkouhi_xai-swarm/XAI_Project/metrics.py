@@ -49,11 +49,11 @@ def complete_method_error(n, p, d, exp_influence, comp_influence):
     if not isinstance(exp_influence, np.ndarray) and not isinstance(exp_influence, list):
         exp_influence = exp_influence.to_numpy()
     
+    if isinstance(exp_influence, list):
+        exp_influence = np.array(exp_influence)
+    
     if not isinstance(comp_influence, np.ndarray):
         comp_influence = comp_influence.to_numpy()
-
-    # data_tools.print_generic("exp_influence", exp_influence[0][3])
-    # data_tools.print_and_end(comp_influence[0][3])
 
     # loop through each instance
     for instance_num in range(n): # loop through instances
@@ -180,7 +180,7 @@ def calculate_metrics_of_model(X, base_xai_dict, swarm_xai_dict):
         computation_time = base_xai_dict[base_xai_name][2] # grabs time consumption
         output_dict["base_xai"][base_xai_name]["mean_per_instance"] = mean_per_instance(computation_time = computation_time, n = n)
 
-        print("\n\n", base_xai_name, "\n\n")
+        # print("\n\n", base_xai_name, "\n\n")
 
         # complete error 
         try:
@@ -202,7 +202,7 @@ def calculate_metrics_of_model(X, base_xai_dict, swarm_xai_dict):
         output_dict["swarm_xai"][swarm_xai_name]["mean_per_instance"] = mean_per_instance(computation_time = computation_time, n = n)
 
         # complete method
-        output_dict["swarm_xai"][swarm_xai_dict]["complete"] = complete_method_error(n = n, p = d, d = d, 
+        output_dict["swarm_xai"][swarm_xai_name]["complete_error"] = complete_method_error(n = n, p = d, d = d, 
                                                                                     exp_influence = swarm_xai_dict[swarm_xai_name]["contribute"], 
                                                                                     comp_influence = base_xai_dict["complete"][1])
 
