@@ -11,6 +11,8 @@ from numpy import linalg as LA
 
 import scipy.stats
 import helpful_utils.data_tools as data_tools
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 
 ##################################################################
 #   Methods
@@ -149,34 +151,79 @@ data = the original/preprocessed dataset
 explanation = the explanations tensor
 d = the number of features
 """
-def readability(data, explanation):
+def readability(data, explanations):
     n = data.shape[1] # number of features
 
     # convert things to numpy
     if isinstance(data, pd.DataFrame): 
         data = data.to_numpy()
     
-    if isinstance(explanation, pd.DataFrame):
-        explanation = explanation.to_numpy()
+    if isinstance(explanations, pd.DataFrame):
+        explanations = explanations.to_numpy()
     
     if isinstance(data, list):
         data = np.array(data)
     
-    if isinstance(explanation, list):
-        explanation = np.array(explanation)
+    if isinstance(explanations, list):
+        explanations = np.array(explanations)
 
     # calculate the metric
     spearman_total = 0
 
     for feature_num in range(n): # loop through features
         feature_vector = grab_feature_vector(data = data, feature_num = feature_num)
-        explainable_feature_vector = grab_feature_vector(data = explanation, feature_num = feature_num)
+        explainable_feature_vector = grab_feature_vector(data = explanations, feature_num = feature_num)
 
         spearman_coefficient = abs(scipy.stats.spearmanr(feature_vector, explainable_feature_vector).statistic)
         spearman_total += spearman_coefficient
 
     return spearman_total / n
 
+
+"""
+Metric 6: Clusterability 
+explanations = list of explanations
+"""
+def clusterability(explanations, num_clusters = 2):
+
+    # convert things to numpy
+    if isinstance(explanations, pd.DataFrame):
+        explanations = explanations.to_numpy()
+
+    if isinstance(explanations, list):
+        explanations = np.array(explanations)
+
+    d = explanations.shape[1] # number of features
+    total = 0
+    
+    # calculate clusterability
+    for feature_num in range(d - 1): # loop through all feature
+        first_feature_vector = grab_feature_vector(data = explanations, feature_num = feature_num)
+        second_feature_vector = grab_feature_vector(data = explanations, feature_num = feature_num + 1)
+
+        coord_pair = np.column_stack((first_feature_vector, second_feature_vector)) # grab the coordinates by stacking the feature vectors
+
+        kmeans = KMeans(n_clusters = num_clusters, n_init = "auto").fit(coord_pair) # run a clustering algorithms: k-means
+
+        score = silhouette_score(coord_pair, kmeans.labels_) # calculate the silhouette score
+
+        total += score # accumulate score
+
+        # data_tools.print_generic("labels", kmeans.labels_)
+        # data_tools.print_generic("first_feature_vector", first_feature_vector)
+        # data_tools.print_generic("second_feature_vector", second_feature_vector)
+        # data_tools.print_generic("coord_pair", coord_pair)
+    
+    # data_tools.print_generic("total", total)
+
+
+
+    # for feature_num in range(d - 1): # loop through all features
+    #     total += S(K(explanations[:, feature_num], explanations[:, feature_num + 1])) # summations
+    
+    scaling_factor = 2 / (d * (d - 1))
+
+    return scaling_factor * total
 
 # grabs a feature vector
 def grab_feature_vector(data, feature_num):
@@ -190,25 +237,6 @@ def grab_feature_vector(data, feature_num):
         feature_vector.append(datapoint[feature_num]) # add to feature vector
 
     return feature_vector
-
-"""
-Metric 6: Clusterability 
-dataset = the actual dataset preprocessed
-n = number of instances
-d = number of features
-K = clustering function
-S = evaluation function
-explanations = list of explanations
-"""
-def clusterability(dataset, d, K, S, explanations):
-    total = 0
-
-    for feature_num in range(d - 1): # loop through all features
-        total += S(K(explanations[:, feature_num], explanations[:, feature_num + 1])) # summations
-    
-    scaling_factor = 2 / (d * (d - 1))
-
-    return scaling_factor * total
 
 ##################################################################
 #   Functions that are used for the experiment directly
@@ -268,7 +296,10 @@ def calculate_metrics_of_model(X, base_xai_dict, swarm_xai_dict, epsilon = .3):
         # output_dict["base_xai"][base_xai_name]["robustness"] = robustness(data = X, influences = base_xai_dict[base_xai_name][1], epsilon = epsilon)
 
         # readability
-        output_dict["base_xai"][base_xai_name]["readability"] = readability(data = X, explanation = base_xai_dict[base_xai_name][1])
+        output_dict["base_xai"][base_xai_name]["readability"] = readability(data = X, explanations = base_xai_dict[base_xai_name][1])
+
+        # clusterability
+        output_dict["base_xai"][base_xai_name]["clusterability"] = clusterability(explanations = base_xai_dict[base_xai_name][1])
 
 
     # swarm approaches
@@ -293,6 +324,9 @@ def calculate_metrics_of_model(X, base_xai_dict, swarm_xai_dict, epsilon = .3):
         output_dict["swarm_xai"][swarm_xai_name]["robustness"] = robustness(data = X, influences = swarm_xai_dict[swarm_xai_name]["contribute"], epsilon = epsilon)
 
         # readability
-        output_dict["swarm_xai"][swarm_xai_name]["readability"] = readability(data = X, explanation = swarm_xai_dict[swarm_xai_name]["contribute"])
+        output_dict["swarm_xai"][swarm_xai_name]["readability"] = readability(data = X, explanations = swarm_xai_dict[swarm_xai_name]["contribute"])
+
+        # clusterability
+        output_dict["swarm_xai"][swarm_xai_name]["clusterability"] = clusterability(explanations = swarm_xai_dict[swarm_xai_name]["contribute"])
 
     return output_dict
