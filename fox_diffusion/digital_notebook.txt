@@ -1,0 +1,6 @@
+Digital Notebook
+
+09/01/2024
+Introduction to Project Topic
+	- read through docx file
+	- learned about diffusion models via powerpoint
