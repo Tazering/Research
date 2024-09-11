@@ -4,3 +4,18 @@ Digital Notebook
 Introduction to Project Topic
 	- read through docx file
 	- learned about diffusion models via powerpoint
+
+Meeting 09/10/2024
+Two papers in the document
+	- [1] from Berkeley
+	- [7][8] from Irvine
+Run the github code on Rivanna system
+	- data comes from papers
+
+First step is to reproduce results from Irvine paper
+
+Berkeley paper references code from Irvine paper
+
+Data Assimilation
+
+New and Promising way to do digital twins
