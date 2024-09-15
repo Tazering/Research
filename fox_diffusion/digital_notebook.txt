@@ -13,6 +13,7 @@ Run the github code on Rivanna system
 	- data comes from papers
 
 First step is to reproduce results from Irvine paper
+	- focus on diffusion mechanics
 
 Berkeley paper references code from Irvine paper
 
