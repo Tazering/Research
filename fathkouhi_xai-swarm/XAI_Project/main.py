@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
+import random
 
 import swarm_xai
 
@@ -23,6 +24,7 @@ import model_utils
 import base_xai
 import xai_utils
 import metrics
+import helpful_utils.constants as helpful_constants
 
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
@@ -88,7 +90,7 @@ def main():
     all_swarm_parameters["bat"] = bat_swarm_parameters
     all_swarm_parameters["abc"] = abc_swarm_parameters
 
-    experiment_dataset(61, all_swarm_parameters = all_swarm_parameters)
+    experiment_dataset("iris", all_swarm_parameters = all_swarm_parameters)
 
     return None
 
@@ -96,7 +98,7 @@ def main():
 """
 This function runs the pipeline on a single dataset
 """
-def experiment_dataset(dataset_id, all_swarm_parameters):
+def experiment_dataset(name, all_swarm_parameters, random_seed = 17):
     # Step 1: grab the dataset and preprocess it
     # Step 2: run the four machine learning models
     # Step 3: run the base xai functions on the dataset
@@ -106,45 +108,69 @@ def experiment_dataset(dataset_id, all_swarm_parameters):
     ##########
     #   Step 1: Grab the dataset
     ##########
-    dataset_id = 61
+    dataset_info = {}
+    dataset_id = constants.datasets[name]
+    random.seed(random_seed)
 
     X_preprocessed, y_preprocessed = data_preprocessing.process_openml_dataset(dataset_index = dataset_id)
     X_train, X_test, y_train, y_test = train_test_split(X_preprocessed, y_preprocessed, test_size = .2)
+
+    X_preprocessed_shape = X_preprocessed.shape
+
+    dataset_info["id"] = dataset_id
+    dataset_info["name"] = name
+    dataset_info["num_features"] = X_preprocessed_shape[1]
+    dataset_info["num_instances"] = X_preprocessed_shape[0]
+
 
     ##########
     #   Step 2: Run the models
     ##########
     lr_model, svm_model, rf_model = model_utils.run_models(X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test)
 
-    ##########
-    #   Step 3: Run the Base XAI functions on the dataset and Run the Swarm Approach on the dataset
-    ##########
+    model_names = ["logistic_regression", "support_vector_machine", "random_forest"] # names for dictionary
+    models = [lr_model, svm_model, rf_model] # list of models
+    experiment_results = {} # empty results
 
-    # dictionary in the form: {(string) name of approach: (tuple) (explanation, shap_values, time_consumption)}
-    base_xai_dict = base_xai_study(X_preprocessed = X_test, y_preprocessed = y_test, clf = svm_model)
+    # loop through all the models
+    for model_num in range(len(models)):
 
-    # data_tools.print_generic("base_xai_dict[lime]", base_xai_dict["lime"][1].abs().mean().sort_values(ascending = False).cumsum())
-    # data_tools.print_generic("base_xai_dict[lime] total", base_xai_dict["lime"][1].abs().mean())
+        ##########
+        #   Step 3: Run the Base XAI functions on the dataset and Run the Swarm Approach on the dataset
+        ##########
 
-    ##########
-    #   Step 4: 
-    ##########
-    
-    # dictionary in the form: {(string) name of approach: (dictionary) {(string) measurement: (numerical) value}}
-    # swarm_xai.run_swarm_approach(X_test = X_test, y_test = y_test, num_trials = 10)
+        # dictionary in the form: {(string) name of approach: (tuple) (explanation, shap_values, time_consumption)}
+        base_xai_dict = base_xai_study(X_preprocessed = X_test, y_preprocessed = y_test, clf = models[model_num])
 
-    swarm_xai_dict = swarm_xai_study(X_test = X_test, y_test = y_test, model = svm_model, num_trials = 10, all_swarm_parameters = all_swarm_parameters)
+        # data_tools.print_generic("base_xai_dict[lime]", base_xai_dict["lime"][1].abs().mean().sort_values(ascending = False).cumsum())
+        # data_tools.print_generic("base_xai_dict[lime] total", base_xai_dict["lime"][1].abs().mean())
 
+        ##########
+        #   Step 4: 
+        ##########
+        
+        # dictionary in the form: {(string) name of approach: (dictionary) {(string) measurement: (numerical) value}}
+        # swarm_xai.run_swarm_approach(X_test = X_test, y_test = y_test, num_trials = 10)
 
-    # ##########
-    # #   Step 5: Get the Metrics of both base and optimized
-    # ##########
-
-    # # dictionary that stores metrics of base_xai approaches
-    experiment_results = metrics.calculate_metrics_of_model(X = X_test, base_xai_dict = base_xai_dict, swarm_xai_dict = swarm_xai_dict)
+        swarm_xai_dict = swarm_xai_study(X_test = X_test, y_test = y_test, model = models[model_num], num_trials = 10, all_swarm_parameters = all_swarm_parameters)
 
 
+        # ##########
+        # #   Step 5: Get the Metrics of both base and optimized
+        # ##########
+
+        # # dictionary that stores metrics of base_xai approaches
+        experiment_results[model_names[model_num]] = metrics.calculate_metrics_of_model(X = X_test, base_xai_dict = base_xai_dict, swarm_xai_dict = swarm_xai_dict)
+
+
+    data_tools.display_dataset_information(dataset_info = dataset_info)
     data_tools.print_generic("experiment_results", experiment_results)
+
+    ########
+    #    Step 6: Add to Excel File for Efficiency
+    ########
+
+    data_tools.create_excel_sheet(dataset_info = dataset_info, experiment_results = experiment_results)
 
 """
 Run all base_xai approaches on a single dataset and single model

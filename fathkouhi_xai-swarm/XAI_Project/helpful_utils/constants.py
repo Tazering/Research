@@ -15,6 +15,10 @@ import xgboost as xgb
 models = {
     "logistic_regression": sklearn.linear_model.LogisticRegression(),
     "support_vector_machine": sklearn.svm.SVC(probability = True),
-    "random_forests": sklearn.ensemble.RandomForestClassifier(),
-    "gradient_boosted_machine": xgb.XGBClassifier(use_label_encoder = False, eval_metrics = "logloss", n_jobs = 1),
+    "random_forests": sklearn.ensemble.RandomForestClassifier()
+    # "gradient_boosted_machine": xgb.XGBClassifier(use_label_encoder = False, eval_metrics = "logloss", n_jobs = 1),
+}
+
+datasets = {
+    "iris": 61
 }
