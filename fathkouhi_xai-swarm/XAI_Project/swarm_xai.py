@@ -207,6 +207,7 @@ def run_xai_swarm(X_test, y_test, model, num_trials, swarm_parameters):
     # get the prediction results from surrogate
     # data_tools.print_generic("best_pos", best_pos)
     results = best_surrogate_pred(X_test = X_test, best_pos = best_pos)
+    data_tools.print_and_end(best_pos)
 
     # shap values
 
