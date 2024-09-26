@@ -112,6 +112,7 @@ def experiment_dataset(name, all_swarm_parameters, random_seed = 17):
     dataset_id = constants.datasets[name]
     random.seed(random_seed)
 
+
     X_preprocessed, y_preprocessed = data_preprocessing.process_openml_dataset(dataset_index = dataset_id)
     X_train, X_test, y_train, y_test = train_test_split(X_preprocessed, y_preprocessed, test_size = .2)
 
@@ -132,6 +133,7 @@ def experiment_dataset(name, all_swarm_parameters, random_seed = 17):
     models = [lr_model, svm_model, rf_model] # list of models
     experiment_results = {} # empty results
 
+
     # loop through all the models
     for model_num in range(len(models)):
 
@@ -141,9 +143,6 @@ def experiment_dataset(name, all_swarm_parameters, random_seed = 17):
 
         # dictionary in the form: {(string) name of approach: (tuple) (explanation, shap_values, time_consumption)}
         base_xai_dict = base_xai_study(X_preprocessed = X_test, y_preprocessed = y_test, clf = models[model_num])
-
-        # data_tools.print_generic("base_xai_dict[lime]", base_xai_dict["lime"][1].abs().mean().sort_values(ascending = False).cumsum())
-        # data_tools.print_generic("base_xai_dict[lime] total", base_xai_dict["lime"][1].abs().mean())
 
         ##########
         #   Step 4: 
@@ -160,11 +159,13 @@ def experiment_dataset(name, all_swarm_parameters, random_seed = 17):
         # ##########
 
         # # dictionary that stores metrics of base_xai approaches
+
         experiment_results[model_names[model_num]] = metrics.calculate_metrics_of_model(X = X_test, base_xai_dict = base_xai_dict, swarm_xai_dict = swarm_xai_dict)
 
 
+
     data_tools.display_dataset_information(dataset_info = dataset_info)
-    data_tools.print_generic("experiment_results", experiment_results)
+    # data_tools.print_generic("experiment_results", experiment_results)
 
     ########
     #    Step 6: Add to Excel File for Efficiency
@@ -235,6 +236,7 @@ def swarm_xai_study(X_test, y_test, model, num_trials, all_swarm_parameters):
     # dictionary to hold outputs
     output_dict = {}
 
+    
     for swarm_optimizer in swarm_optimizers:
         output_dict[swarm_optimizer] = {}
         output_dict[swarm_optimizer] = swarm_xai.run_swarm_approach(X_test = X_test, y_test = y_test, model = model, num_trials = num_trials, swarm_parameters = all_swarm_parameters[swarm_optimizer])

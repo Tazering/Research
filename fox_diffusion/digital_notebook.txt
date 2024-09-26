@@ -34,3 +34,19 @@ My job: read the papers and let Zeyu know about it
 	- format it in a paper approach maybe
 	- maybe also try powerpoint
 
+Meeting 09/20/2024
+
+One group does not know what model they used.
+Neurips paper has paper while others do not. 
+Seems like Berkeley paper references Irvine paper.
+
+Generative AI can denoise the data
+
+Won't use true values for training the model in hopes of getting them back to the original model
+
+Will try to describe the data
+
+My task:
+	- read through papers and provide presentations by next or following week
+	- provide presentation/reference guide on diffusion models
+	- focus on understanding diffusion

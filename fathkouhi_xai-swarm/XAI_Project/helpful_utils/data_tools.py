@@ -89,7 +89,7 @@ def create_excel_sheet(dataset_info, experiment_results):
     
     
     for model_name in model_names: # loop through models
-        df_existing = pd.read_excel(filename, sheet_name = model_name)
+        # df_existing = pd.read_excel(filename, sheet_name = model_name)
         df_combined = pd.DataFrame()
 
         for base_xai_approach_name in base_xai_approach_names:
@@ -99,18 +99,14 @@ def create_excel_sheet(dataset_info, experiment_results):
 
             df_combined = df_combined._append(df_new, ignore_index = True)
 
-        df_output = df_existing._append(df_combined, ignore_index = True)
-        output_list.append(df_output)
+        # df_output = df_existing._append(df_combined, ignore_index = True)
+        output_list.append(df_combined)
 
-    output_list[0].to_excel("test.xlsx", sheet_name = "logistic_regression", index = False)
-    # output_list[1].to_excel("test.xlsx", sheet_name = "support_vector_machine", index = False)
-    # output_list[2].to_excel("test.xlsx", sheet_name = "random_forest", index = False)
+    print(f"Output List: \n{output_list}\n")
 
+    output_df = pd.concat([output_list[0], output_list[1], output_list[2]])
+    output_df.to_excel(filename, sheet_name = "sheet1", index = False)
 
-
-            
-
-
-
-
-    return None
+    # output_list[0].to_excel(filename, sheet_name = "sheet1", index = False)
+    # output_list[1].to_excel(filename, sheet_name = "sheet2", index = False)
+    # output_list[2].to_excel(filename, sheet_name = "sheet3", index = False)

@@ -265,6 +265,7 @@ def calculate_metrics_of_model(X, base_xai_dict, swarm_xai_dict, epsilon = .3):
     output_dict["base_xai"] = {}
     output_dict["swarm_xai"] = {}
 
+    print("\n\nGot here\n\n")
 
     # base approaches
     approach_names = ["lime", "complete", "kernelshap", "spearman", "treeshap", "treeshap_approx"]
@@ -328,5 +329,7 @@ def calculate_metrics_of_model(X, base_xai_dict, swarm_xai_dict, epsilon = .3):
 
         # clusterability
         output_dict["swarm_xai"][swarm_xai_name]["clusterability"] = [clusterability(explanations = swarm_xai_dict[swarm_xai_name]["contribute"])]
+
+    
 
     return output_dict
