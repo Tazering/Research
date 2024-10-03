@@ -52,7 +52,7 @@ def main():
         "num_agents": 10,
         "upper_bound": 1,
         "lower_bound": -1,
-        "dimension": 4,
+        "dimension": 1,
         "num_iterations": 10,
         "w": .5,
         "c1": 1,
@@ -66,7 +66,7 @@ def main():
         "num_agents": 10,
         "upper_bound": 1,
         "lower_bound": -1,
-        "dimension": 4,
+        "dimension": 1,
         "num_iterations": 10,
         "r0": .9,
         "V0": .5,
@@ -82,7 +82,7 @@ def main():
         "num_agents": 10,
         "upper_bound": 1,
         "lower_bound": -1,
-        "dimension": 4,
+        "dimension": 1,
         "num_iterations": 10
     }
 
@@ -90,7 +90,7 @@ def main():
     all_swarm_parameters["bat"] = bat_swarm_parameters
     all_swarm_parameters["abc"] = abc_swarm_parameters
 
-    experiment_dataset("iris", all_swarm_parameters = all_swarm_parameters)
+    experiment_dataset("reading_hydro_downstream", all_swarm_parameters = all_swarm_parameters)
 
     return None
 
@@ -115,6 +115,12 @@ def experiment_dataset(name, all_swarm_parameters, random_seed = 17):
 
     X_preprocessed, y_preprocessed = data_preprocessing.process_openml_dataset(dataset_index = dataset_id)
     X_train, X_test, y_train, y_test = train_test_split(X_preprocessed, y_preprocessed, test_size = .2)
+
+    dimension = X_train.shape[1]
+
+    # parameters
+    for parameter in all_swarm_parameters:
+        parameter["dimension"] = dimension
 
     X_preprocessed_shape = X_preprocessed.shape
 

@@ -20,5 +20,7 @@ models = {
 }
 
 datasets = {
+    # 2 features
+    "reading_hydro_downstream": 44267,
     "iris": 61
 }
