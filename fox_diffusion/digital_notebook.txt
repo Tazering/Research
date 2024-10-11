@@ -50,3 +50,10 @@ My task:
 	- read through papers and provide presentations by next or following week
 	- provide presentation/reference guide on diffusion models
 	- focus on understanding diffusion
+
+Meeting 10/11/2024
+We presented on the two papers. Recommends looking at OmniFold.
+
+Tasks:
+	- Paper Review for OmniFold
+	- Better understand Diffusion Models

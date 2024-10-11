@@ -90,7 +90,7 @@ def main():
     all_swarm_parameters["bat"] = bat_swarm_parameters
     all_swarm_parameters["abc"] = abc_swarm_parameters
 
-    experiment_dataset("reading_hydro_downstream", all_swarm_parameters = all_swarm_parameters)
+    experiment_dataset("impavw", all_swarm_parameters = all_swarm_parameters)
 
     return None
 
@@ -118,9 +118,7 @@ def experiment_dataset(name, all_swarm_parameters, random_seed = 17):
 
     dimension = X_train.shape[1]
 
-    # parameters
-    for parameter in all_swarm_parameters:
-        parameter["dimension"] = dimension
+    all_swarm_parameters["pso"]
 
     X_preprocessed_shape = X_preprocessed.shape
 

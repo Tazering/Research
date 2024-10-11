@@ -20,6 +20,8 @@ models = {
 }
 
 datasets = {
+    # 1 features
+    "impavw" : 545,
     # 2 features
     "reading_hydro_downstream": 44267,
     "iris": 61
