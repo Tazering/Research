@@ -52,7 +52,7 @@ def main():
         "num_agents": 10,
         "upper_bound": 1,
         "lower_bound": -1,
-        "dimension": 1,
+        "dimension": 4,
         "num_iterations": 10,
         "w": .5,
         "c1": 1,
@@ -66,7 +66,7 @@ def main():
         "num_agents": 10,
         "upper_bound": 1,
         "lower_bound": -1,
-        "dimension": 1,
+        "dimension": 4,
         "num_iterations": 10,
         "r0": .9,
         "V0": .5,
@@ -82,7 +82,7 @@ def main():
         "num_agents": 10,
         "upper_bound": 1,
         "lower_bound": -1,
-        "dimension": 1,
+        "dimension": 4,
         "num_iterations": 10
     }
 
@@ -90,7 +90,7 @@ def main():
     all_swarm_parameters["bat"] = bat_swarm_parameters
     all_swarm_parameters["abc"] = abc_swarm_parameters
 
-    experiment_dataset("impavw", all_swarm_parameters = all_swarm_parameters)
+    experiment_dataset("analcatdata_neavote", all_swarm_parameters = all_swarm_parameters)
 
     return None
 
@@ -118,7 +118,10 @@ def experiment_dataset(name, all_swarm_parameters, random_seed = 17):
 
     dimension = X_train.shape[1]
 
-    all_swarm_parameters["pso"]
+    all_swarm_parameters["pso"]["dimension"] = dimension
+    all_swarm_parameters["bat"]["dimension"] = dimension
+    all_swarm_parameters["abc"]["dimension"] = dimension
+
 
     X_preprocessed_shape = X_preprocessed.shape
 
@@ -247,33 +250,6 @@ def swarm_xai_study(X_test, y_test, model, num_trials, all_swarm_parameters):
 
     
     return output_dict
-
-
-# def swarm_xai_study(X_preprocessed, X_test, y_test, model, categorical = {"Begin_Categorical": 5, "Categorical_Index": [1, 2]}, predict_prob = False):
-#     n = X_preprocessed.shape[0]
-
-#     # grabs a sample
-#     # sample, sample_list = xai_utils.grab_sample(X_test, y_test, sample_number)
-
-#     # dictionary to hold outputs
-#     output_dict = {}
-#     output_dict["pso"] = {}
-#     output_dict["bat"] = {}
-#     output_dict["abc"] = {}
-
-#     if model is not None:
-#         # dictionaries that list outputs of swarm approach
-#         if predict_prob:
-#             output_dict["pso"] = swarm_xai.XAI(max(model.predict_proba(sample)[0]), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 1).XAI_swarm_Invoke()
-#             output_dict["bat"] = swarm_xai.XAI(max(model.predict_proba(sample)[0]), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 2).XAI_swarm_Invoke()
-#             output_dict["abc"] = swarm_xai.XAI(max(model.predict_proba(sample)[0]), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 3).XAI_swarm_Invoke()
-#         else:
-#             output_dict["pso"] = swarm_xai.XAI(model.predict(sample), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 1).XAI_swarm_Invoke()
-#             output_dict["bat"] = swarm_xai.XAI(model.predict(sample), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 2).XAI_swarm_Invoke()
-#             output_dict["abc"] = swarm_xai.XAI(model.predict(sample), sample_list, np.size(sample_list), 50, 20, 30, -1, 1, X_preprocessed, categorical, False, 3).XAI_swarm_Invoke()
-
-    
-#     return output_dict
 
 main()
 

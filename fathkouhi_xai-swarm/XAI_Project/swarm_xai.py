@@ -156,8 +156,8 @@ def run_xai_swarm(X_test, y_test, model, num_trials, swarm_parameters):
                 return sample_list.T.dot(solution)
 
             def cost_eval(solution):
-                print(f"\nmodel_pred\n {model_pred}\n")
-                print(f"\nsolution\n {solution}\n")
+                # print(f"\nmodel_pred\n {model_pred}\n")
+                # print(f"\nsolution\n {solution}\n")
                 return (model_pred[instance_num] - explainer_func(solution))**2
 
 

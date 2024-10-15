@@ -220,9 +220,10 @@ def clusterability(explanations, num_clusters = 10):
 
     # for feature_num in range(d - 1): # loop through all features
     #     total += S(K(explanations[:, feature_num], explanations[:, feature_num + 1])) # summations
-    
-    scaling_factor = 2 / (d * (d - 1))
-
+    try:
+        scaling_factor = 2 / (d * (d - 1))
+    except Exception:
+        return -99999
     return scaling_factor * total
 
 # grabs a feature vector
@@ -264,8 +265,6 @@ def calculate_metrics_of_model(X, base_xai_dict, swarm_xai_dict, epsilon = .3):
     output_dict = {}
     output_dict["base_xai"] = {}
     output_dict["swarm_xai"] = {}
-
-    print("\n\nGot here\n\n")
 
     # base approaches
     approach_names = ["lime", "complete", "kernelshap", "spearman", "treeshap", "treeshap_approx"]

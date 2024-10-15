@@ -20,9 +20,19 @@ models = {
 }
 
 datasets = {
-    # 1 features
-    "impavw" : 545,
+    # 1 feature
+
     # 2 features
     "reading_hydro_downstream": 44267,
+    "balloon": 512,
+    "humandevel": 924,
+    "reading_hydro_upstream": 44221,
+    "SquareF": 45617,
+
+    # 3 features
+    "transplant": 544,
+    "prnn_synth": 464,
+    "analcatdata_neavote": 523,
+    # 4 features
     "iris": 61
 }
