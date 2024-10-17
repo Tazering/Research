@@ -45,6 +45,10 @@ datasets = {
     "visualizing_ethanol": 711,
     "chscase_geyser1712": 712,
     "vineyard": 713,
+    "vineyard_192": 192,
+    "RAM_price": 40601,
+    "ELE-1": 42361,
+    "hisua": 42231,
 
     # 4 features
     "iris": 61

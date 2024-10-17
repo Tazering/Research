@@ -208,18 +208,6 @@ def clusterability(explanations, num_clusters = 10):
         score = silhouette_score(coord_pair, kmeans.labels_) # calculate the silhouette score
 
         total += score # accumulate score
-
-        # data_tools.print_generic("labels", kmeans.labels_)
-        # data_tools.print_generic("first_feature_vector", first_feature_vector)
-        # data_tools.print_generic("second_feature_vector", second_feature_vector)
-        # data_tools.print_generic("coord_pair", coord_pair)
-    
-    # data_tools.print_generic("total", total)
-
-
-
-    # for feature_num in range(d - 1): # loop through all features
-    #     total += S(K(explanations[:, feature_num], explanations[:, feature_num + 1])) # summations
     try:
         scaling_factor = 2 / (d * (d - 1))
     except Exception:
