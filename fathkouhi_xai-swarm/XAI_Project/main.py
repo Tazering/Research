@@ -90,7 +90,7 @@ def main():
     all_swarm_parameters["bat"] = bat_swarm_parameters
     all_swarm_parameters["abc"] = abc_swarm_parameters
 
-    experiment_dataset("hisua", all_swarm_parameters = all_swarm_parameters)
+    experiment_dataset("S1", all_swarm_parameters = all_swarm_parameters)
 
     return None
 

@@ -48,7 +48,8 @@ datasets = {
     "vineyard_192": 192,
     "RAM_price": 40601,
     "ELE-1": 42361,
-    "hisua": 42231,
+    "olindda_outliers": 42793,
+    "S1": 42110,
 
     # 4 features
     "iris": 61
