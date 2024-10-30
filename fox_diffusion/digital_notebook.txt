@@ -57,3 +57,8 @@ We presented on the two papers. Recommends looking at OmniFold.
 Tasks:
 	- Paper Review for OmniFold
 	- Better understand Diffusion Models
+
+
+Next Task:
+	- Paper Review [8]
+	- Diffusion Models 
