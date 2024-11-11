@@ -52,5 +52,11 @@ datasets = {
     "S1": 42110,
 
     # 4 features
-    "iris": 61
+    "iris": 61,
+
+    # 10 features
+    "cps_85_wages": 534
+    # 11 features
+    # 12 features
+    # 13 features
 }
