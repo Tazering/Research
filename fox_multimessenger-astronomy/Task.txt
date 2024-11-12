@@ -1,9 +1,0 @@
-Astronomy/XAI
-
-- look at Hayat, Stein, and Walmsley Paper
-- do deep literature review
-
-XAI/Swarm
-
-- Using code, recreate experiment from paper
-- Compare with metrics in the paper the two approaches
