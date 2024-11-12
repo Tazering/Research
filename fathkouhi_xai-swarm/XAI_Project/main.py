@@ -35,6 +35,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.compose import make_column_selector as selector
 from colorama import Style, Fore
+import openml as oml
 
 
 """
@@ -90,9 +91,26 @@ def main():
     all_swarm_parameters["bat"] = bat_swarm_parameters
     all_swarm_parameters["abc"] = abc_swarm_parameters
 
-    experiment_dataset("S1", all_swarm_parameters = all_swarm_parameters)
+
+    df_datasets = get_datasets()
+    print(df_datasets.keys())
+
+    # experiment_dataset("S1", all_swarm_parameters = all_swarm_parameters)
 
     return None
+
+# Returns a DataFrame with a filtered list of datasets from OpenML
+def get_datasets():
+    df_datasets = oml.datasets.list_datasets(output_format="dataframe")
+    df_datasets = df_datasets.drop_duplicates(subset="did").drop_duplicates(subset=["name"]).drop_duplicates(subset=df_datasets.drop(["did","name","version","uploader"],axis=1).columns, keep="last")
+    df_datasets = df_datasets.loc[(df_datasets["NumberOfFeatures"]<13) & #OpenML counts the target in the number of features, we want up to 13 features
+                                  (df_datasets["NumberOfFeatures"]>9) &
+                                  (df_datasets["NumberOfInstances"]<10000) &
+                                  (df_datasets["NumberOfInstances"]>50) &
+                                  (df_datasets["NumberOfClasses"]>1) &
+                                  (df_datasets["NumberOfClasses"]<1000)]  #Some strange dataset has 3169 classes
+    
+    return df_datasets
 
 
 """
