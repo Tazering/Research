@@ -22,7 +22,7 @@ from cinn_model import create_flow_model
 from cvae_model import create_cvae_model
 from pretrained_vae_model import create_vae_model
 
-from train import create_log_folder, make_optimizer
+from train_lvd import create_log_folder, make_optimizer
 
 
 class TrainingState(NamedTuple):
@@ -65,7 +65,7 @@ def create_update_fn(cinn_step, optimizer):
 
     return update_fn
 
-
+# the main function that will run when the this python file runs
 def train(
     model_type: str,
     options_file: str,
@@ -78,21 +78,25 @@ def train(
     # initialize cuda
     jax.random.normal(jax.random.PRNGKey(0))
     
+    # check which model is being run
     if model_type.lower() == "cinn":
-        print("Model Type: CINN")
+        print("Model Type: CINN") # 4.1
         model_factory = create_flow_model
-    elif model_type.lower() == "cvae":
+    elif model_type.lower() == "cvae": # 4.1
         print("Model Type: CVAE")
         model_factory = create_cvae_model
-    elif model_type.lower() == "vae":
+    elif model_type.lower() == "vae": # 4.1
         print("Model Type: Pretrain VAE")
         model_factory = create_vae_model
     else:
         raise ValueError(f"Unkown Model Type: {model_type}")
     
     print("Loading Data")
+
+    # grab the dataset
     dataset = Dataset(training_file, weights_file=weights_file)
 
+    # sets the configuration of the 
     config = Config(
         **OmegaConf.load(options_file),
         parton_dim=dataset.parton_dim,
@@ -100,18 +104,24 @@ def train(
         met_dim=dataset.met_dim
     )
 
+    # creates a dataloader
     dataloader = dataset.create_dataloader(config.batch_size)
     single_device_batch = jax.tree_map(lambda x: x[0], next(dataloader))
 
+    # run the model
     model, loss_fn, step_fn = model_factory(config)
+    
+    # create the optimizer
     optimizer = make_optimizer(config.learning_rate, config.gradient_clipping)
 
     # Initialize Model on GPU 0
     # -------------------------------------------------------------------------
     print("Initializing Model")
-    random_key = jax.random.PRNGKey(config.seed)
-    random_key, init_key = jax.random.split(random_key, 2)
+    random_key = jax.random.PRNGKey(config.seed) # creates a random key using pseudo random number generator 
+    random_key, init_key = jax.random.split(random_key, 2) # splits a prng key into num 2 new keys by adding a leading axis
 
+
+    # checkpoint file
     if checkpoint_file is not None:
         with open(checkpoint_file, 'rb') as file:
             training_state = pickle.load(file)

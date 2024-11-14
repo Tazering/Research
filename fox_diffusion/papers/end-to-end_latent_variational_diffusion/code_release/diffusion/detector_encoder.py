@@ -49,4 +49,3 @@ class DetectorEncoder(hk.Module):
             )
 
         return hk.Linear(self.hidden_dim)(embeddings[:, 0])
-        

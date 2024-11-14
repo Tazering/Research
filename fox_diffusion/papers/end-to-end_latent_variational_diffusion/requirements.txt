@@ -1,0 +1,10 @@
+## created by Tyler Kim
+
+omegaconf
+tqdm
+jax
+flax
+tensorflow
+dm-haiku
+tensorflow_probability
+keras
