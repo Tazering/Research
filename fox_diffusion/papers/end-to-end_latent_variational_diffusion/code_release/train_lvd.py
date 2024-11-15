@@ -24,7 +24,7 @@ from diffusion.config import Config
 
 from lvd_model import create_model
 
-
+# 
 class TrainingState(NamedTuple):
     vdm_params: Dict[str, Array]
     gamma_params: Dict[str, Array]
@@ -33,7 +33,7 @@ class TrainingState(NamedTuple):
     vdm_optimizer_state: Dict[str, Array]
     gamma_optimizer_state: Dict[str, Array]
 
-
+# creates a log folder
 def create_log_folder(logdir: str, name: str):
     base_dir = f"{logdir}/{name}"
     makedirs(base_dir, exist_ok=True)
@@ -44,7 +44,7 @@ def create_log_folder(logdir: str, name: str):
 
     return log_folder
 
-
+# 
 def create_vdm_update(vdm_step, vdm_optimizer):
     @partial(jax.pmap, axis_name="num_devices")
     def vdm_update(
@@ -126,7 +126,7 @@ def make_optimizer(learning_rate, gradient_clip=None):
 
     return optimizer
 
-
+# train the vld
 def train(
     options_file: str,
     training_file: str,
@@ -138,9 +138,11 @@ def train(
     # initialize cuda
     jax.random.normal(jax.random.PRNGKey(0))
 
+    # create the dataset
     print("Loading Data")
     dataset = Dataset(training_file, weights_file=weights_file)
 
+    # setup the configuration
     config = Config(
         **OmegaConf.load(options_file),
         parton_dim=dataset.parton_dim,
@@ -148,20 +150,26 @@ def train(
         met_dim=dataset.met_dim
     )
 
+    # create a dataloader from a dataset
     dataloader = dataset.create_dataloader(config.batch_size)
     single_device_batch = jax.tree_map(lambda x: x[0], next(dataloader))
 
+    # creates the variational diffusion model
     variation_diffusion_model, noise_scheduler, vdm_step, gamma_step = create_model(
         config)
 
+    # make optimizers
     vdm_optimizer = make_optimizer(
         config.learning_rate, config.gradient_clipping)
+    
+    # gamma optimizer
     gamma_optimizer = make_optimizer(
         config.learning_rate, config.gradient_clipping)
 
     # Initialize Model on GPU 0
     # -------------------------------------------------------------------------
     print("Initializing Model")
+    # initialize using pseudo-random number generator
     random_key = jax.random.PRNGKey(config.seed)
     random_key, vdm_key, gamma_key = jax.random.split(random_key, 3)
 
@@ -241,7 +249,7 @@ def train(
 
             batch_number += 1
 
-
+# parse out command line arguments
 def parse_args():
     parser = ArgumentParser()
 

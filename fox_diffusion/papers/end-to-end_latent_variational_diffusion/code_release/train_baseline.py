@@ -65,7 +65,7 @@ def create_update_fn(cinn_step, optimizer):
 
     return update_fn
 
-
+# running the training process
 def train(
     model_type: str,
     options_file: str,
@@ -78,6 +78,7 @@ def train(
     # initialize cuda
     jax.random.normal(jax.random.PRNGKey(0))
     
+    # select which model to use
     if model_type.lower() == "cinn":
         print("Model Type: CINN")
         model_factory = create_flow_model
@@ -170,6 +171,7 @@ def train(
 
             batch_number += 1
 
+# just to handle command line arguments
 
 def parse_args():
     parser = ArgumentParser()
