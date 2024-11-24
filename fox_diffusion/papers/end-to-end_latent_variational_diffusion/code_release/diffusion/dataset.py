@@ -20,7 +20,8 @@ class Batch(NamedTuple):
 
 class Dataset:
     def __init__(self, filepath: str, split: float = 1.0, weights_file: str = None) -> None:
-        with np.load(filepath) as file:
+
+        with np.load(filepath, allow_pickle = True) as file: # this works ideally with an npz/npy file
             self.parton_features = file["parton_features"]            
             self.detector_features = file["detector_features"]
             self.detector_mask = file["detector_mask"]

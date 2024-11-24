@@ -24,7 +24,10 @@ from diffusion.config import Config
 
 from lvd_model import create_model
 
+from tyler_testing import convert_txt_to_npy
+import pandas as pd
 
+# Creates a Training Class
 class TrainingState(NamedTuple):
     vdm_params: Dict[str, Array]
     gamma_params: Dict[str, Array]
@@ -33,7 +36,7 @@ class TrainingState(NamedTuple):
     vdm_optimizer_state: Dict[str, Array]
     gamma_optimizer_state: Dict[str, Array]
 
-
+# creates a log folder
 def create_log_folder(logdir: str, name: str):
     base_dir = f"{logdir}/{name}"
     makedirs(base_dir, exist_ok=True)
@@ -44,7 +47,7 @@ def create_log_folder(logdir: str, name: str):
 
     return log_folder
 
-
+# 
 def create_vdm_update(vdm_step, vdm_optimizer):
     @partial(jax.pmap, axis_name="num_devices")
     def vdm_update(
@@ -126,7 +129,7 @@ def make_optimizer(learning_rate, gradient_clip=None):
 
     return optimizer
 
-
+# train the vld
 def train(
     options_file: str,
     training_file: str,
@@ -138,9 +141,14 @@ def train(
     # initialize cuda
     jax.random.normal(jax.random.PRNGKey(0))
 
+    # create the dataset
     print("Loading Data")
+
+    convert_txt_to_npy("../datasets/OmniFold_Big/OmniFold_Big_0.txt", "omnifold0")
+
     dataset = Dataset(training_file, weights_file=weights_file)
 
+    # setup the configuration
     config = Config(
         **OmegaConf.load(options_file),
         parton_dim=dataset.parton_dim,
@@ -148,28 +156,37 @@ def train(
         met_dim=dataset.met_dim
     )
 
+    # create a dataloader from a dataset
     dataloader = dataset.create_dataloader(config.batch_size)
     single_device_batch = jax.tree_map(lambda x: x[0], next(dataloader))
 
+    # creates the variational diffusion model
     variation_diffusion_model, noise_scheduler, vdm_step, gamma_step = create_model(
         config)
 
+    # make optimizers
     vdm_optimizer = make_optimizer(
         config.learning_rate, config.gradient_clipping)
+    
+    # gamma optimizer: this parameter handles the noise scheduling
     gamma_optimizer = make_optimizer(
         config.learning_rate, config.gradient_clipping)
 
     # Initialize Model on GPU 0
     # -------------------------------------------------------------------------
     print("Initializing Model")
+    # initialize using pseudo-random number generator
     random_key = jax.random.PRNGKey(config.seed)
     random_key, vdm_key, gamma_key = jax.random.split(random_key, 3)
 
-    if checkpoint_file is not None:
+    # checks if there is a checkpoint file available
+    # I am guessing this is mostly to save time
+    if checkpoint_file is not None: # if a checkpoint file does exist
         with open(checkpoint_file, 'rb') as file:
             training_state = pickle.load(file)
 
-    else:
+    else: # create new variational diffusion model
+
         vdm_params, vdm_state = variation_diffusion_model.init(
             vdm_key, single_device_batch)
         gamma_params = noise_scheduler.init(gamma_key, single_device_batch)
@@ -204,6 +221,7 @@ def train(
     summary_writer = tf.summary.create_file_writer(logdir)
     batch_number = start_batch
 
+    # seems mostly for describing the model
     with summary_writer.as_default():
         if config.num_batches > 0:
             pbar = tqdm(islice(dataloader, config.num_batches),
@@ -241,7 +259,7 @@ def train(
 
             batch_number += 1
 
-
+# parse out command line arguments
 def parse_args():
     parser = ArgumentParser()
 
@@ -257,3 +275,11 @@ def parse_args():
 
 if __name__ == "__main__":
     train(**parse_args().__dict__)
+
+
+"""
+TODO
+    1. Load dataset DONE
+    2. Document Code for execution
+    3. Execute the Code
+"""
